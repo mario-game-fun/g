@@ -1,3 +1,7 @@
+
+            EJS_player = "#game";
+           EJS_core = "snes";
+            window.EJS_pathtodata = "https://mario-game-fun.github.io/g/snes/data-ejs423/";
 (async function () {
     const scripts = [
         "emulator.js",
