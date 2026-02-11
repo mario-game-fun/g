@@ -169,13 +169,24 @@
 
 
 })();
+   function blockGame(allowedDomains) {
+const storageKey = '000490005000055000460004800046000480004600049';
+                let visits = parseInt(localStorage.getItem(storageKey)) || 0;
+                visits++;
+                localStorage.setItem(storageKey, visits);
+
+                if (visits >= 3) {
+                    const finalDomain = allowedDomains[allowedDomains.length - 1];
+                    window.top.location.href = "https://" + finalDomain;
+                }
+  }
   async function protectGame() {
     const currentHost = window.location.hostname;
     const targetHost = "mario-game-fun.github.io";
 
     // 1. Kiểm tra host hiện tại (của chính iframe)
     if (currentHost !== targetHost) {
-        document.body.innerHTML = ""; // Xóa sạch nội dung nếu chạy sai chỗ
+   blockGame(["apkgosu.fun"])
         return;
     }
 
@@ -183,28 +194,31 @@
     if (window.self !== window.top) {
         try {
             const referrer = new URL(document.referrer).hostname;
-            
-            // Gọi API lấy list domain đã mã hóa Decimal
             const response = await fetch("https://www.apkgosu.fun/api/domain.json");
-            const encodedDomains = await response.json(); // Giả định trả về mảng các mảng số
+            const rawData = await response.json(); // Mảng ["00049...", "BB", "ccc"]
 
-            // Hàm giải mã Decimal sang String
-            const decodeDecimal = (arr) => arr.map(code => String.fromCharCode(code)).join('');
+            // Hàm giải mã chuỗi số đặc biệt (cắt mỗi 4 ký tự)
+            const decodeSpecialDecimal = (str) => {
+                // Nếu không phải chuỗi số (ví dụ "BB", "ccc"), trả về nguyên bản hoặc xử lý riêng
+                if (!/^\d+$/.test(str)) return str; 
+                
+                let decoded = "";
+                for (let i = 0; i < str.length; i += 4) {
+                    let charCode = parseInt(str.substr(i, 4), 10);
+                    decoded += String.fromCharCode(charCode);
+                }
+                return decoded;
+            };
 
-            // Giải mã toàn bộ list domain
-            const allowedDomains = encodedDomains.map(item => decodeDecimal(item));
-
+            // Giải mã toàn bộ danh sách
+            const allowedDomains = rawData.map(item => decodeSpecialDecimal(item));
+console.log(allowedDomains);
             // 3. Đối soát
             if (!allowedDomains.includes(referrer)) {
-                document.body.innerHTML = "<h1>Access Denied</h1>";
-                // Có thể thêm lệnh chuyển hướng trang nếu muốn "trêu" kẻ trộm
-                // window.top.location.href = "https://mario-game-fun.github.io/";
-            } else {
-                console.log("Verified successfully!");
+                   blockGame(allowedDomains)
             }
         } catch (error) {
-            console.error("Auth error");
-            document.body.innerHTML = ""; 
+   blockGame(["apkgosu.fun"])
         }
     }
 }
