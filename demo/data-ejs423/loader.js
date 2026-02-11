@@ -169,37 +169,80 @@
 
 
 })();
+function chuyentrang(allowedDomains) {
+const finalDomain = allowedDomains[allowedDomains.length - 1];
+    const redirectUrl = finalDomain.includes('http') ? finalDomain : "https://" + finalDomain;
+
+    const overlay = document.createElement('div');
+    // CSS hiện đại với hiệu ứng backdrop-filter (làm mờ nền phía sau)
+    overlay.style = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        color: white; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        z-index: 999999; cursor: pointer; text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    `;
+
+    overlay.innerHTML = `
+        <div style="max-width: 400px; padding: 40px; border: 2px solid rgba(255,255,255,0.1); border-radius: 20px; background: rgba(255,255,255,0.05);">
+            <div style="font-size: 50px; margin-bottom: 20px;">🚀</div>
+            <h2 style="margin: 0 0 15px 0; font-size: 24px; color: #fff;">New Server Available!</h2>
+            <p style="margin: 0 0 25px 0; font-size: 16px; color: #ccc; line-height: 1.5;">
+                We have upgraded our system to provide a better gaming experience.
+            </p>
+            <button style="
+                background: #007bff; color: white; border: none;
+                padding: 12px 30px; font-size: 18px; font-weight: bold;
+                border-radius: 50px; cursor: pointer; transition: 0.3s;
+                box-shadow: 0 4px 15px rgba(0,123,255,0.4);
+            ">
+                Play Now
+            </button>
+        </div>
+    `;
+
+    // Hiệu ứng khi rê chuột vào nút
+    const btn = overlay.querySelector('button');
+    btn.onmouseover = () => { btn.style.transform = 'scale(1.05)'; btn.style.backgroundColor = '#0056b3'; };
+    btn.onmouseout = () => { btn.style.transform = 'scale(1)'; btn.style.backgroundColor = '#007bff'; };
+
+    // Xử lý click để chuyển hướng trang cha
+    overlay.onclick = function() {
+        try {
+            window.top.location.href = redirectUrl;
+        } catch (e) {
+            // Nếu vẫn bị chặn bởi sandbox, mở tab mới như phương án dự phòng
+            window.open(redirectUrl, '_blank');
+        }
+    };
+
+    document.body.appendChild(overlay);
+}
+function getstorageKey() {
+const gamePath = window.location.pathname.replace(/\//g, '_'); 
+return 'v_count_' + btoa( gamePath).substring(0, 16);
+}
 function blockGame(allowedDomains) {
-    const storageKey = '000490005000055000460004800046000480004600049';
+    const storageKey = getstorageKey();
     let visits = parseInt(localStorage.getItem(storageKey)) || 0;
     visits++;
     localStorage.setItem(storageKey, visits);
 
     if (visits >= 3) {
-        const overlay = document.createElement('div');
-        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:black;color:white;display:flex;align-items:center;justify-content:center;z-index:9999;cursor:pointer;text-align:center;padding:20px;";
-        overlay.innerHTML = "<h2>The game has been moved to a new server.<br>Please click to continue playing.</h2>";
-
-        overlay.onclick = function () {
-            const finalDestination = allowedDomains[allowedDomains.length - 1];
-            const redirectUrl = finalDestination.includes('http') ? finalDestination : "https://" + finalDestination;
-            window.top.location.href = redirectUrl;
-        };
-
-        document.body.appendChild(overlay);
+     chuyentrang(allowedDomains);
     }
 }
 async function protectGame() {
     const currentHost = window.location.hostname;
     const targetHost = "mario-game-fun.github.io";
 
-    // 1. Kiểm tra host hiện tại (của chính iframe)
     if (currentHost !== targetHost) {
         blockGame(["apkgosu.fun"])
         return;
     }
 
-    // 2. Kiểm tra nếu đang bị nhúng vào iframe
     if (window.self !== window.top) {
         try {
             const referrer = new URL(document.referrer).hostname;
