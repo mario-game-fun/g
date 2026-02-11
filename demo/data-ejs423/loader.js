@@ -169,31 +169,42 @@
 
 
 })();
-    async function protectGame() {
+  async function protectGame() {
     const currentHost = window.location.hostname;
     const targetHost = "mario-game-fun.github.io";
 
+    // 1. Kiểm tra host hiện tại (của chính iframe)
     if (currentHost !== targetHost) {
-        console.error("Access Denied: Invalid Host");
-        document.body.innerHTML = "<h1>Unauthorized Access</h1>";
+        document.body.innerHTML = ""; // Xóa sạch nội dung nếu chạy sai chỗ
         return;
     }
 
+    // 2. Kiểm tra nếu đang bị nhúng vào iframe
     if (window.self !== window.top) {
         try {
             const referrer = new URL(document.referrer).hostname;
             
+            // Gọi API lấy list domain đã mã hóa Decimal
             const response = await fetch("https://www.apkgosu.fun/api/domain.json");
-            const allowedDomains = await response.json();
+            const encodedDomains = await response.json(); // Giả định trả về mảng các mảng số
 
+            // Hàm giải mã Decimal sang String
+            const decodeDecimal = (arr) => arr.map(code => String.fromCharCode(code)).join('');
+
+            // Giải mã toàn bộ list domain
+            const allowedDomains = encodedDomains.map(item => decodeDecimal(item));
+
+            // 3. Đối soát
             if (!allowedDomains.includes(referrer)) {
-                console.warn("Domain không được phép nhúng:", referrer);
-                document.body.innerHTML = "<h1>This game cannot be embedded here.</h1>";
+                document.body.innerHTML = "<h1>Access Denied</h1>";
+                // Có thể thêm lệnh chuyển hướng trang nếu muốn "trêu" kẻ trộm
+                // window.top.location.href = "https://mario-game-fun.github.io/";
             } else {
-                console.log("Domain hợp lệ, khởi động trò chơi...");
+                console.log("Verified successfully!");
             }
         } catch (error) {
-            console.error("Lỗi kiểm tra bản quyền:", error);
+            console.error("Auth error");
+            document.body.innerHTML = ""; 
         }
     }
 }
