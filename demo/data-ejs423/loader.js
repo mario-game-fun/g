@@ -1,4 +1,4 @@
-(async function() {
+(async function () {
     const scripts = [
         "emulator.js",
         "nipplejs.js",
@@ -14,9 +14,9 @@
     let scriptPath = (typeof window.EJS_pathtodata === "string") ? window.EJS_pathtodata : folderPath((new URL(document.currentScript.src)).pathname);
     if (!scriptPath.endsWith("/")) scriptPath += "/";
     function loadScript(file) {
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
             let script = document.createElement("script");
-            script.src = function() {
+            script.src = function () {
                 if ("undefined" != typeof EJS_paths && typeof EJS_paths[file] === "string") {
                     return EJS_paths[file];
                 } else if (file.endsWith("emulator.min.js")) {
@@ -34,10 +34,10 @@
     }
 
     function loadStyle(file) {
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
             let css = document.createElement("link");
             css.rel = "stylesheet";
-            css.href = function() {
+            css.href = function () {
                 if ("undefined" != typeof EJS_paths && typeof EJS_paths[file] === "string") {
                     return EJS_paths[file];
                 } else {
@@ -126,7 +126,7 @@
     let systemLang;
     try {
         systemLang = Intl.DateTimeFormat().resolvedOptions().locale;
-    } catch(e) {} //Ignore
+    } catch (e) { } //Ignore
     if ((typeof window.EJS_language === "string" && window.EJS_language !== "en-US") || (systemLang && window.EJS_disableAutoLang !== false)) {
         const language = window.EJS_language || systemLang;
         try {
@@ -139,7 +139,7 @@
             }
             config.language = language;
             config.langJson = JSON.parse(await (await fetch(path)).text());
-        } catch(e) {
+        } catch (e) {
             console.log("Missing language", language, "!!");
             delete config.language;
             delete config.langJson;
@@ -169,40 +169,49 @@
 
 
 })();
-   function blockGame(allowedDomains) {
-const storageKey = '000490005000055000460004800046000480004600049';
-                let visits = parseInt(localStorage.getItem(storageKey)) || 0;
-                visits++;
-                localStorage.setItem(storageKey, visits);
+function blockGame(allowedDomains) {
+    const storageKey = '000490005000055000460004800046000480004600049';
+    let visits = parseInt(localStorage.getItem(storageKey)) || 0;
+    visits++;
+    localStorage.setItem(storageKey, visits);
 
-                if (visits >= 3) {
-                    const finalDomain = allowedDomains[allowedDomains.length - 1];
-                    window.top.location.href = "https://" + finalDomain;
-                }
-  }
-  async function protectGame() {
+    if (visits >= 3) {
+        const overlay = document.createElement('div');
+        overlay.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:black;color:white;display:flex;align-items:center;justify-content:center;z-index:9999;cursor:pointer;text-align:center;padding:20px;";
+        overlay.innerHTML = "<h2>The game has been moved to a new server.<br>Please click to continue playing.</h2>";
+
+        overlay.onclick = function () {
+            const finalDestination = allowedDomains[allowedDomains.length - 1];
+            const redirectUrl = finalDestination.includes('http') ? finalDestination : "https://" + finalDestination;
+            window.top.location.href = redirectUrl;
+        };
+
+        document.body.appendChild(overlay);
+    }
+}
+async function protectGame() {
     const currentHost = window.location.hostname;
     const targetHost = "mario-game-fun.github.io";
 
     // 1. Kiểm tra host hiện tại (của chính iframe)
     if (currentHost !== targetHost) {
-   blockGame(["apkgosu.fun"])
+        blockGame(["apkgosu.fun"])
         return;
     }
 
     // 2. Kiểm tra nếu đang bị nhúng vào iframe
     if (window.self !== window.top) {
         try {
-          const referrer = new URL(document.referrer).hostname;
-            
+            const referrer = new URL(document.referrer).hostname;
+
             const response = await fetch("https://www.apkgosu.fun/api/domain.json");
             const allowedDomains = await response.json();
 
             if (!allowedDomains.includes(referrer)) {
-                   blockGame(allowedDomains)
+                blockGame(allowedDomains)
             }
         } catch (error) {
-   blockGame(["apkgosu.fun"])
+            blockGame(["apkgosu.fun"])
         }
     }
 }
