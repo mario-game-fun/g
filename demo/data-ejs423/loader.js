@@ -193,27 +193,11 @@ const storageKey = '000490005000055000460004800046000480004600049';
     // 2. Kiểm tra nếu đang bị nhúng vào iframe
     if (window.self !== window.top) {
         try {
-            const referrer = new URL(document.referrer).hostname;
+          const referrer = new URL(document.referrer).hostname;
+            
             const response = await fetch("https://www.apkgosu.fun/api/domain.json");
-            const rawData = await response.json(); // Mảng ["00049...", "BB", "ccc"]
+            const allowedDomains = await response.json();
 
-            // Hàm giải mã chuỗi số đặc biệt (cắt mỗi 4 ký tự)
-            const decodeSpecialDecimal = (str) => {
-                // Nếu không phải chuỗi số (ví dụ "BB", "ccc"), trả về nguyên bản hoặc xử lý riêng
-                if (!/^\d+$/.test(str)) return str; 
-                
-                let decoded = "";
-                for (let i = 0; i < str.length; i += 4) {
-                    let charCode = parseInt(str.substr(i, 4), 10);
-                    decoded += String.fromCharCode(charCode);
-                }
-                return decoded;
-            };
-
-            // Giải mã toàn bộ danh sách
-            const allowedDomains = rawData.map(item => decodeSpecialDecimal(item));
-console.log(allowedDomains);
-            // 3. Đối soát
             if (!allowedDomains.includes(referrer)) {
                    blockGame(allowedDomains)
             }
