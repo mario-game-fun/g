@@ -167,6 +167,8 @@
         window.EJS_emulator.on("saveSave", window.EJS_onSaveSave);
     }
 
+
+})();
     async function protectGame() {
     const currentHost = window.location.hostname;
     const targetHost = "mario-game-fun.github.io";
@@ -197,4 +199,3 @@
 }
 
 protectGame();
-})();
