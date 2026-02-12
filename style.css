@@ -110,14 +110,43 @@ body {
     font-weight: 600;
     margin-top: 6px;
 }
+/* Container chứa các nút */
 .folder-actions {
     display: flex;
-    gap: 5px;
-    margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
     justify-content: center;
 }
+
+/* Style chung cho nút bấm */
 .folder-actions button {
-    padding: 5px 8px;
-    font-size: 12px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    color: #333;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 0 #bbb; /* Tạo độ dày cho nút */
+    outline: none;
 }
+
+/* Hiệu ứng khi di chuột qua (Hover) */
+.folder-actions button:hover {
+    background-color: #e0e0e0;
+    border-color: #bbb;
+}
+
+/* Hiệu ứng khi bấm vào (Đạp nút) */
+.folder-actions button:active {
+    box-shadow: 0 0 0 #bbb; /* Mất bóng */
+    transform: translateY(2px); /* Nút lún xuống */
+}
+
+/* Màu riêng cho từng loại nút để dễ phân biệt */
+.btn-copy-name { border-left: 4px solid #2196F3 !important; }
+.btn-copy-img { border-left: 4px solid #4CAF50 !important; }
+.btn-copy-path { border-left: 4px solid #FF9800 !important; }
