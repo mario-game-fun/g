@@ -4,7 +4,15 @@
     const branch = "main";
     const path_git = "https://mario-game-fun.github.io/g/";
 
-    
+    function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.opacity = "1";
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+    }, 1500);
+}
 
 async function loadFolders(path, containerId) {
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
