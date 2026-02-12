@@ -77,14 +77,14 @@ body {
 #folder-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 25px;
-    padding: 20px;
+    gap: 6px;
+    padding: 5px;
 }
 
 .folder-card {
     background: #2c2c2c;
     border-radius: 12px;
-    padding: 10px;
+    padding: 5px;
     text-align: center;
     cursor: pointer;
     transition: 0.2s;
@@ -108,13 +108,12 @@ body {
     color: #fff;
     font-size: 15px;
     font-weight: 600;
-    margin-top: 6px;
 }
 /* Container chứa các nút */
 .folder-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 3px;
+    gap: 5px;
     margin-top: 12px;
     justify-content: center;
 }
@@ -147,6 +146,6 @@ body {
 }
 
 /* Màu riêng cho từng loại nút để dễ phân biệt */
-.btn-copy-name { border-left: 2px solid #2196F3 !important; }
-.btn-copy-img { border-left: 2px solid #4CAF50 !important; }
-.btn-copy-path { border-left: 2px solid #FF9800 !important; }
+.btn-copy-name { border-left: 4px solid #2196F3 !important; }
+.btn-copy-img { border-left: 4px solid #4CAF50 !important; }
+.btn-copy-path { border-left: 4px solid #FF9800 !important; }
