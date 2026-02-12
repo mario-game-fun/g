@@ -110,3 +110,14 @@ body {
     font-weight: 600;
     margin-top: 6px;
 }
+.folder-actions {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    justify-content: center;
+}
+.folder-actions button {
+    padding: 5px 8px;
+    font-size: 12px;
+    cursor: pointer;
+}

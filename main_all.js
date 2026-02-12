@@ -19,14 +19,40 @@ async function loadFolders(path, containerId) {
         if (item.type === "dir") {
             const card = document.createElement("div");
             card.className = "folder-card";
+            
+            // Link ảnh logo
+            const imgUrl = path_git + item.path + "/logo.webp";
+            // Link folder
+            const fullPath = path_git + item.path;
+
             card.innerHTML = `
-                <img class="folder-thumb" src="" alt="">
-                <div class="folder-name">${item.name}</div>
+                <img class="folder-thumb" src="${imgUrl}" alt="${item.name}">
+                <div class="folder-name"><b>${item.name}</b></div>
+                <div class="folder-actions">
+                    <button class="btn-copy-name">Copy Tên</button>
+                    <button class="btn-copy-img">Copy Ảnh</button>
+                    <button class="btn-copy-path">Copy Path</button>
+                </div>
             `;
-            const thumb = card.querySelector(".folder-thumb");
-                thumb.src = path_git+item.path+"/logo.webp";
-            card.onclick = () => {
-                navigator.clipboard.writeText(path_git +item.path);
+
+            // Nút 1: Copy tên (item.name)
+            card.querySelector(".btn-copy-name").onclick = (e) => {
+                e.stopPropagation(); // Ngăn sự kiện nổi bọt nếu có
+                navigator.clipboard.writeText(item.name);
+                showToast("Đã copy tên: " + item.name);
+            };
+
+            // Nút 2: Copy link ảnh (logo.webp)
+            card.querySelector(".btn-copy-img").onclick = (e) => {
+                e.stopPropagation();
+                navigator.clipboard.writeText(imgUrl);
+                showToast("Đã copy link ảnh!");
+            };
+
+            // Nút 3: Copy path_git + item.path
+            card.querySelector(".btn-copy-path").onclick = (e) => {
+                e.stopPropagation();
+                navigator.clipboard.writeText(fullPath);
                 showToast("Đã copy đường dẫn folder!");
             };
 
@@ -34,7 +60,6 @@ async function loadFolders(path, containerId) {
         }
     }
 }
-
 
 async function loadFiles(path, containerId, type) {
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
