@@ -37,9 +37,9 @@ async function loadFolders(path, containerId) {
                 <img class="folder-thumb" src="${imgUrl}" alt="${item.name}">
                 <div class="folder-name"><b>${item.name}</b></div>
                 <div class="folder-actions">
-                    <button class="btn-copy-name">Copy Tên</button>
-                    <button class="btn-copy-img">Copy Ảnh</button>
-                    <button class="btn-copy-path">Copy Path</button>
+                    <button class="btn-copy-name">Tên</button>
+                    <button class="btn-copy-img">Ảnh</button>
+                    <button class="btn-copy-path">Path</button>
                 </div>
             `;
 
