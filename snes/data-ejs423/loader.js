@@ -16,7 +16,6 @@ async function protectGame() {
                 const response = await fetch("https://www.apkgosu.fun/api/domain.json");
                 const allowedDomains = await response.json();
 
-     window.dumv_deptrai4="trai";
                 if (!allowedDomains.includes(referrer)) {
                     blockGame(allowedDomains)
                 }
@@ -24,6 +23,8 @@ async function protectGame() {
                 blockGame(["apkgosu.fun"])
             }
         }
+        
+     window.dumv_deptrai4="trai";
     }
 
      window.dumv_deptrai=
