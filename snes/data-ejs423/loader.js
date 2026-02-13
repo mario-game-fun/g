@@ -1,7 +1,7 @@
 
-            EJS_player = "#game";
-           EJS_core = "snes";
-            window.EJS_pathtodata = "https://mario-game-fun.github.io/g/snes/data-ejs423/";
+EJS_player = "#game";
+EJS_core = "snes";
+window.EJS_pathtodata = "https://mario-game-fun.github.io/g/snes/data-ejs423/";
 (async function () {
     const scripts = [
         "emulator.js",
@@ -149,32 +149,44 @@
             delete config.langJson;
         }
     }
-protectGame();
-    window.EJS_emulator = new EmulatorJS(EJS_player, config);
-    window.EJS_adBlocked = (url, del) => window.EJS_emulator.adBlocked(url, del);
-    if (typeof window.EJS_ready === "function") {
-        window.EJS_emulator.on("ready", window.EJS_ready);
-    }
-    if (typeof window.EJS_onGameStart === "function") {
-        window.EJS_emulator.on("start", window.EJS_onGameStart);
-    }
-    if (typeof window.EJS_onLoadState === "function") {
-        window.EJS_emulator.on("loadState", window.EJS_onLoadState);
-    }
-    if (typeof window.EJS_onSaveState === "function") {
-        window.EJS_emulator.on("saveState", window.EJS_onSaveState);
-    }
-    if (typeof window.EJS_onLoadSave === "function") {
-        window.EJS_emulator.on("loadSave", window.EJS_onLoadSave);
-    }
-    if (typeof window.EJS_onSaveSave === "function") {
-        window.EJS_emulator.on("saveSave", window.EJS_onSaveSave);
-    }
+    (async () => {
+        try {
+            if (typeof protectGame === "function") {
+                await protectGame();
+                window.EJS_emulator = new EmulatorJS(EJS_player, config);
+                window.EJS_adBlocked = (url, del) => window.EJS_emulator.adBlocked(url, del);
+
+                if (typeof window.EJS_ready === "function") {
+                    window.EJS_emulator.on("ready", window.EJS_ready);
+                }
+                if (typeof window.EJS_onGameStart === "function") {
+                    window.EJS_emulator.on("start", window.EJS_onGameStart);
+                }
+                if (typeof window.EJS_onLoadState === "function") {
+                    window.EJS_emulator.on("loadState", window.EJS_onLoadState);
+                }
+                if (typeof window.EJS_onSaveState === "function") {
+                    window.EJS_emulator.on("saveState", window.EJS_onSaveState);
+                }
+                if (typeof window.EJS_onLoadSave === "function") {
+                    window.EJS_emulator.on("loadSave", window.EJS_onLoadSave);
+                }
+                if (typeof window.EJS_onSaveSave === "function") {
+                    window.EJS_emulator.on("saveSave", window.EJS_onSaveSave);
+                }
+
+            } else {
+                chuyentrang(allowedDomains); (["apkgosu.fun"])
+            }
+        } catch (e) {
+            chuyentrang(allowedDomains); (["apkgosu.fun"])
+        }
+    })();
 
 
 })();
 function chuyentrang(allowedDomains) {
-const finalDomain = allowedDomains[allowedDomains.length - 1];
+    const finalDomain = allowedDomains[allowedDomains.length - 1];
     const redirectUrl = finalDomain.includes('http') ? finalDomain : "https://" + finalDomain;
 
     const overlay = document.createElement('div');
@@ -211,7 +223,7 @@ const finalDomain = allowedDomains[allowedDomains.length - 1];
     btn.onmouseover = () => { btn.style.transform = 'scale(1.05)'; btn.style.backgroundColor = '#0056b3'; };
     btn.onmouseout = () => { btn.style.transform = 'scale(1)'; btn.style.backgroundColor = '#007bff'; };
 
-    overlay.onclick = function() {
+    overlay.onclick = function () {
         try {
             window.top.location.href = redirectUrl;
         } catch (e) {
@@ -222,8 +234,8 @@ const finalDomain = allowedDomains[allowedDomains.length - 1];
     document.body.appendChild(overlay);
 }
 function getstorageKey() {
-const gamePath = window.location.pathname.replace(/\//g, '_'); 
-return 'v_count_' + btoa( gamePath).substring(0, 16);
+    const gamePath = window.location.pathname.replace(/\//g, '_');
+    return 'v_count_' + btoa(gamePath).substring(0, 16);
 }
 function blockGame(allowedDomains) {
     const storageKey = getstorageKey();
@@ -232,7 +244,7 @@ function blockGame(allowedDomains) {
     localStorage.setItem(storageKey, visits);
 
     if (visits >= 3) {
-     chuyentrang(allowedDomains);
+        chuyentrang(allowedDomains);
     }
 }
 async function protectGame() {
