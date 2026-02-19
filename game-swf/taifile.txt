@@ -1,4 +1,4 @@
-fetch('https://data.classicgames.me/mario/media/mario-kart-racing.swf')
+fetch('https://data.classicgames.me/mario/media/mario-kart-circuit.swf')
   .then(response => response.blob())
   .then(blob => {
       const url = window.URL.createObjectURL(blob);
