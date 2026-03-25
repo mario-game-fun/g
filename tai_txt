@@ -1,5 +1,5 @@
 (async () => {
-  const fileUrl = 'https://classic.mariogames.be/nes/2/super-mario-bros.nes';
+  const fileUrl = 'https://classic.mariogames.be/nes/21/mario-bros-classic.nes';
   const fileName = 'super-mario-bros.nes';
 
   try {
